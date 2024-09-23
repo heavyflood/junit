@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -26,6 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -36,13 +38,11 @@ import java.util.List;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @ExtendWith(RestDocumentationExtension.class)
@@ -78,6 +78,7 @@ public class MemberTest {
     @DisplayName("멤버 생성 테스트")
     @Transactional
     @Rollback(true)
+    @EnabledIfSystemProperty(named = "env", matches = "QA")
     void memberCreationTest() throws Exception{
 
         //given
@@ -113,6 +114,7 @@ public class MemberTest {
 
     @Test
     @DisplayName("멤버 목록 조회 테스트")
+    @EnabledIfSystemProperty(named = "env", matches = "QA")
     void memberListSelectTest() throws Exception{
 
         //given
@@ -133,6 +135,7 @@ public class MemberTest {
 
     @Test
     @DisplayName("멤버 조회 테스트")
+    @EnabledIfSystemProperty(named = "env", matches = "QA")
     void memberSelectTest() throws Exception{
 
         //given
@@ -157,6 +160,22 @@ public class MemberTest {
                 .andExpect(jsonPath("$.age", notNullValue()))
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andReturn();
+
+    }
+
+    @Test
+    @DisplayName("샘플 테스트")
+    void sampleTest() throws Exception{
+
+        //given
+
+        //when
+
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/member/test")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("OK"));
 
     }
 }
