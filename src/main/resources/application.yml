@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: demo
+
+  datasource:
+    url: 'jdbc:mariadb://localhost:3306/JUnitSample'
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: root
+    password: 0811
+
+  jpa:
+    show-sql: true
+    properties:
+     hibernate:
+      format_sql: true
+
+server:
+  port: 8080
+
