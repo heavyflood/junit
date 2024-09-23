@@ -39,10 +39,4 @@ public class MemberController {
         Member member = memberService.SelectMemberById(id);
         return ResponseEntity.ok(member);
     }
-
-    @GetMapping("/member/test")
-    public String test(){
-        String msg = "OK";
-        return msg;
-    }
 }

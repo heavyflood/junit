@@ -1,6 +1,6 @@
 package com.example.demo;
 
-import com.example.demo.Controller.MemberController;
+import com.example.demo.Controller.SampleController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SampleTest {
 
     @InjectMocks
-    MemberController memberController;
+    SampleController sampleController;
 
     @Autowired
     protected WebApplicationContext webApplicationContext;
@@ -37,7 +36,7 @@ public class SampleTest {
     protected MockMvc mockMvc;
 
     @BeforeEach
-    public void init(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) { // mockMvc 초기화, 각메서드가 실행되기전에 초기화 되게 함
+    public void init(WebApplicationContext webApplicationContext) { // mockMvc 초기화, 각메서드가 실행되기전에 초기화 되게 함
         // mockMvc = MockMvcBuilders.standaloneSetup(memberController).build();
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
@@ -48,7 +47,7 @@ public class SampleTest {
     @DisplayName("샘플 테스트")
     void sampleTest() throws Exception{
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/member/test")
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/sample/test")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8"))
                 .andExpect(status().isOk())
