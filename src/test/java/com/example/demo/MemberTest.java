@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -19,9 +18,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,18 +31,11 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.util.List;
 
 import static org.hamcrest.Matchers.notNullValue;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest(classes = DemoApplication.class)
 @AutoConfigureRestDocs(outputDir = "build/generated-snippets")
 @EnabledIfSystemProperty(named = "env", matches = "QA")
@@ -68,10 +57,9 @@ public class MemberTest {
     private ObjectMapper mapper = new ObjectMapper();
 
     @BeforeEach
-    public void init(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) { // mockMvc 초기화, 각메서드가 실행되기전에 초기화 되게 함
+    public void init(WebApplicationContext webApplicationContext) { // mockMvc 초기화, 각메서드가 실행되기전에 초기화 되게 함
         // mockMvc = MockMvcBuilders.standaloneSetup(memberController).build();
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .apply(documentationConfiguration(restDocumentation))
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .build();
     }
@@ -140,20 +128,10 @@ public class MemberTest {
         //given
 
         //when
-        MvcResult mvcResult = mockMvc.perform(RestDocumentationRequestBuilders.get("/member/id/{id}", 1)
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/member/id/{id}", 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8"))
                 .andExpect(status().isOk())
-                .andDo(document("get-member",
-                        pathParameters(
-                                parameterWithName("id").description("회원 ID")
-                        ),
-                        responseFields(
-                                fieldWithPath("id").description("회원 ID"),
-                                fieldWithPath("name").description("회원 이름"),
-                                fieldWithPath("age").description("회원 나이")
-                        )
-                ))
                 .andDo(print())
                 .andExpect(jsonPath("$.name", notNullValue()))
                 .andExpect(jsonPath("$.age", notNullValue()))

@@ -4,13 +4,11 @@ import com.example.demo.Controller.SampleController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -23,7 +21,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest(classes = DemoApplication.class)
 public class SampleTest {
 
@@ -44,7 +41,7 @@ public class SampleTest {
     }
 
     @Test
-    @DisplayName("샘플 테스트")
+    @DisplayName("TEST1")
     void sampleTest() throws Exception{
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/sample/test")
